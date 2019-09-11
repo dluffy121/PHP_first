@@ -1,10 +1,12 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-    <style>
-        .error {color: #FF0000;}
-    </style>
-</head>  
+    <head>
+        <style>
+            .error {color: red;}
+            .success {color: chartreuse;}
+            .halted {color: orange;}
+        </style>
+    </head>  
 <body>
 
 <?php
@@ -20,53 +22,63 @@ if($mysqli->connect_error){
 }
 
 //Form Validation
-$nameErr = $emailErr = $genderErr = $websiteErr = "";
-$name = $email = $comment = $website = $gender = "";
-$checkflag=false;
+$nameErr = $emailErr = $genderErr = $websiteErr = $passwordErr = "";
+$name = $email = $comment = $website = $gender = $password = "";
+$nameflag = $websiteflag = $emailflag = $genderflag = $passflag = false;
+$status="";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($_POST["name"])){
         $nameErr = "Name is required";
-        $checkflag = false;
+        $nameflag = false;
     }
     else{
         $name = input_formating($_POST["name"],false);
         if (!preg_match("/^[a-zA-Z ]*$/",$name)) {
             $nameErr = "Only letters and white space allowed";
-            $checkflag = false;
+            $nameflag = false;
         }
         else{
-            $checkflag=true;
-        }
-    }
-
-    if(empty($_POST["email"])){
-        $emailErr = "Email is required";
-        $checkflag = false;
-    }
-    else{
-        $email = input_formating($_POST["email"],false);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Please Endter a Valid Email";
-            $checkflag = false;
-        }
-        else{
-            $checkflag=true;
+            $nameflag=true;
         }
     }
 
     if(empty($_POST["gender"])){
         $genderErr = "Please Specify your Gender";
-        $checkflag = false;
+        $genderflag = false;
     }
     else{
         $gender = input_formating($_POST["gender"],false);
-        $checkflag=true;
+        $genderflag=true;
+    }
+
+    if(empty($_POST["email"])){
+        $emailErr = "Email is required";
+        $emailflag = false;
+    }
+    else{
+        $email = input_formating($_POST["email"],false);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Please Enter a Valid Email";
+            $emailflag = false;
+        }
+        else{
+            $emailflag=true;
+        }
+    }
+
+    if(empty($_POST['password'])) {
+        $passwordErr = "Password cannot be Empty";
+        $passflag = false;
+    }
+    else {
+        $password = $_POST["password"];
+        $passflag = true;
     }
 
     if(empty($_POST["website"])){
         $websiteErr = "Website name is required";
-        $checkflag = false;
+        $websiteflag = false;
     }
     else
     {
@@ -74,29 +86,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $webreg = "/\b(?:(?:https|ftp):\/\/|www\.)*[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i";
         if (!preg_match($webreg, $website)) {
             $websiteErr = "Enter Valid URL";
-            $checkflag = false;
+            $webisteflag = false;
         }
         else{
-            $checkflag=true;
+            $websiteflag=true;
         }
     }
 }
 
 //Database Entry Create
-if($checkflag == true){
+if($name && $genderflag && $emailflag && $passflag && $websiteflag == true){
     if(mysqli_num_rows(mysqli_query($mysqli,"SELECT * FROM myguests WHERE email = '".$email."'")))
     {
-        echo "Already Regisatered";
+        $status = "Already Registered";
     }
     else
     {
-        $sql = "INSERT INTO myguests (name, gender, email, website, comment) VALUES ('".$name."','".$gender."','".$email."','".$website."','".$comment."')";
+        $sql = "INSERT INTO myguests (name, gender, email, password, website, comment) VALUES ('".$name."','".$gender."','".$email."', SHA1('".$password."'),'".$website."','".$comment."')";
         if($mysqli->query($sql) === TRUE){
             $last_id = $mysqli->insert_id;
-            echo "New record Created successfully";
+            $status = "New record Created successfully";
         }
         else {
-            echo "Error: ".$sql."<br>".$mysqli->error;
+            $status = "Error: ".$sql."<br>".$mysqli->error;
         }
     }
 }
@@ -140,12 +152,27 @@ Gender: <br><input type="radio" name="gender"
 E-mail: <input type="text" name="email" value="<?php echo $email;?>">
         <span class="error">*<?php echo $emailErr;?></span>
         <br><br>
+Password: <input type="password" name="password">
+          <span class="error">*<?php echo $passwordErr;?></span>
+          <br><br>
 Website: <input type="text" name="website" value="<?php echo $website;?>">
          <span class="error">*<?php echo $websiteErr;?></span>
          <br><br>
 Comment: <textarea name="comment" rows="5" cols="40" value="<?php echo $comment;?>"></textarea>
          <br><br><br>
 <input type="submit">
+
+<p>
+    <?php 
+    if($status=="Already Registered"){
+        echo "<p class =\"halted\">$status</p>";
+    }
+    else{
+        echo "<p class =\"success\">$status</p>";
+    }
+    ?>
+</p>
+
 </form>
 
 </body>
