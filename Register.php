@@ -4,7 +4,7 @@
         <style>
             .error {color: red;}
             .success {color: chartreuse;}
-            .halted {color: orange;}
+            .warning {color: orange;}
         </style>
     </head>  
 <body>
@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     else
     {
         $website = input_formating($_POST["website"],true);
-        $webreg = "/\b(?:(?:https|ftp):\/\/|www\.)*[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i";
+        $webreg = "/\b(?:(?:https|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i";
         if (!preg_match($webreg, $website)) {
             $websiteErr = "Enter Valid URL";
             $webisteflag = false;
@@ -92,6 +92,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             $websiteflag=true;
         }
     }
+    
+    $comment = $_POST['comment'];
 }
 
 //Database Entry Create
@@ -131,7 +133,9 @@ function input_formating($data,$ifwebsite) {
 
 ?>
 
-<b>PHP form validation</b>
+<center>
+<h1>PHP form validation</h1>
+</center>
 <p class="error">* fields are required</p>
 
 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
@@ -152,20 +156,25 @@ Gender: <br><input type="radio" name="gender"
 E-mail: <input type="text" name="email" value="<?php echo $email;?>">
         <span class="error">*<?php echo $emailErr;?></span>
         <br><br>
-Password: <input type="password" name="password">
+Password: <input type="password" name="password" minlength="5">
           <span class="error">*<?php echo $passwordErr;?></span>
           <br><br>
 Website: <input type="text" name="website" value="<?php echo $website;?>">
          <span class="error">*<?php echo $websiteErr;?></span>
          <br><br>
-Comment: <textarea name="comment" rows="5" cols="40" value="<?php echo $comment;?>"></textarea>
+Comment: <textarea name="comment" rows="3" cols="40" value="<?php echo $comment;?>"></textarea>
          <br><br><br>
 <input type="submit">
+<input type="button" onclick="location.href = 'start.php'" name="start" value="Back">
+
+
+
+
 
 <p>
     <?php 
     if($status=="Already Registered"){
-        echo "<p class =\"halted\">$status</p>";
+        echo "<p class =\"warning\">$status</p>";
     }
     else{
         echo "<p class =\"success\">$status</p>";
