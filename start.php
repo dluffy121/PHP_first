@@ -49,7 +49,7 @@ function checkmail($email, $password){
     else{
         session_start();
         $_SESSION["useremail"] = $email;
-        header("Location: User.html");
+        header("Location: User.php");
     }
 }
 

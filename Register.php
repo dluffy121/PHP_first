@@ -104,13 +104,13 @@ if($name && $genderflag && $emailflag && $passflag && $websiteflag == true){
     }
     else
     {
-        $sql = "INSERT INTO myguests (name, gender, email, password, website, comment) VALUES ('".$name."','".$gender."','".$email."', SHA1('".$password."'),'".$website."','".$comment."')";
-        if($mysqli->query($sql) === TRUE){
+        $regsql = "INSERT INTO myguests (name, gender, email, password, website, comment) VALUES ('".$name."','".$gender."','".$email."', SHA1('".$password."'),'".$website."','".$comment."')";
+        if($mysqli->query($regsql) === TRUE){
             $last_id = $mysqli->insert_id;
             $status = "New record Created successfully";
         }
         else {
-            $status = "Error: ".$sql."<br>".$mysqli->error;
+            $status = "RegError: ".$regsql."<br>".$mysqli->error;
         }
     }
 }

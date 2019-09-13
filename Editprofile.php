@@ -6,6 +6,7 @@
         </title>
         <style>
             .error {color: red}
+            .success{color:chartreuse}
         </style>
     </head>  
 <body>
@@ -26,7 +27,7 @@ if($mysqli->connect_error){
 
 //Variables
 $nameErr = $emailErr = $genderErr = $websiteErr = "";
-$name = $comment = $website = $gender = "";
+$name = $gender = $website = $comment = "";
 $nameflag = $websiteflag = $commentflag = $genderflag = false;
 $status="";
 $del=false;
@@ -35,12 +36,13 @@ $columns = array("name", "gender", "website","comment");
 $email = $_SESSION["useremail"];
 
 $oldvalues = mysqli_fetch_array(mysqli_query($mysqli,"SELECT name,gender,website,comment FROM myguests WHERE email = '".$email."'"));
+
 $name = $oldvalues[0];
 $gender = $oldvalues[1];
 $website = $oldvalues[2];
 $comment = $oldvalues[3];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST"){
+if ($_SERVER['REQUEST_METHOD'] == "POST"){
     if(empty($_POST["name"])){
         $nameErr = "Will Remain Same As Before";
         $nameflag = false;
@@ -82,34 +84,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         }
     }
 
-    if(empty($_POST['comment'])){
+    if(empty($_POST["comment"])){
         $commentErr = "Will Remain Same As Before";
         $commentflag = false;
     }
     else
     {
+        $comment = $_POST["comment"];
         $commentflag = true;
     }
 }
 
 //Database Update
-if($nameflag || $genderflag || $websiteflag || $commentflag ==true)//Next LVL sh****************t
+if($nameflag || $genderflag || $websiteflag || $commentflag == true)//Next LVL sh****************t
 {
     $str = "";
     foreach($columns as $i){
         $str=$str.",".$i." = '".$$i."'";
     }
     $str=preg_replace("/,/","",$str,1);
-    echo $comment;
 
-    //echo "UPDATE myguests SET $str WHERE email='".$email."' ";exit;
-
-    $sql = mysqli_query($mysqli,"UPDATE myguests SET $str WHERE email='".$email."' ");
-    if($mysqli->query($sql) === TRUE){
+    $updsql = "UPDATE myguests SET $str WHERE email='".$email."'";
+    if($mysqli->query($updsql) === TRUE){
         $status = "Updated successfully";
     }
     else {
-        $status = "Error: ".$sql."<br>".$mysqli->error;
+        $status = "UpdError: ".$updsql."<br>".$mysqli->error;
     }
 }
 
@@ -128,14 +128,22 @@ function input_formating($data,$ifwebsite) {
     }
 }
 
-if($del){
-    $deluser = mysqli_query($mysqli,"DROP COLUMN")
+if(isset($_POST['delete'])){
+    $deluser = "DELETE FROM myguests WHERE email = '".$email."' ";
+    if($mysqli->query($deluser) === TRUE){
+        $status = "Deleted successfully";
+    }
+    else {
+        $status = "DelError: ".$deluser."<br>".$mysqli->error;
+    }
+    $del = false;
 }
 
 ?>
 
 <center>
 <h1>Edit User Info</h1>
+<h2><?php echo $email ?></h2>
 </center>
 
 
@@ -158,22 +166,21 @@ Gender: <br><input type="radio" name="gender"
 Website: <input type="text" name="website" value="<?php echo $website;?>">
          <span class="error"><?php echo $websiteErr;?></span>
          <br><br>
-Comment: <textarea name="comment" rows="3" cols="40" value="<?php echo $comment;?>"></textarea>
+Comment: <textarea name="comment" rows="3" cols="40"><?php echo $comment;?></textarea>
          <br><br><br>
 
-<input type="submit" value="Save Changes">
-<input type="button" onclick="location.href = 'User.html'" name="start" value="Back">
-<input type="button" onclick="<?php $del=true; ?>" value="Delete Account">
-
+<button type="submit" id="sshow" style="display: none">Confirm</button>
+<button type="button" id="shide" onclick="getElementById('shide').style.display='none'; getElementById('sshow').style.display=''">Save Changes</button>
+<br>
+<button type="button" onclick="location.href = 'User.php'" name="start">Back</button>
+<br>
+<button type="submit" name="delete" id="dshow" style="display: none">Confirm</button>
+<button type="button" id="dhide" onclick="getElementById('dhide').style.display='none'; getElementById('dshow').style.display=''">Delete Account</button>
+<br>
 
 <p>
     <?php 
-    if($status == "Already Registered"){
-        echo "<p class =\"halted\">$status</p>";
-    }
-    else{
         echo "<p class =\"success\">$status</p>";
-    }
     ?>
 </p>
 

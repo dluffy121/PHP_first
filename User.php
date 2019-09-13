@@ -9,7 +9,8 @@
             <h1>
                 Successfully Logged In
             </h1>
-            <input type="button" onclick="location.href = 'EditProfile.php'" value="Edit Profile">
+            <button type="button" onclick="location.href = 'EditProfile.php'">Edit Profile</button>
+            <button type="button" onclick="location.href = 'start.php'">LogOut</button>
         <center>
     </body>
 </html>
