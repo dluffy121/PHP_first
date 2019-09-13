@@ -5,8 +5,8 @@
             Edit Profile
         </title>
         <style>
-            .error {color: red}
-            .success{color:chartreuse}
+            .error {color: red;}
+            .success{color: darkgreen;}
         </style>
     </head>  
 <body>
@@ -30,7 +30,6 @@ $nameErr = $emailErr = $genderErr = $websiteErr = "";
 $name = $gender = $website = $comment = "";
 $nameflag = $websiteflag = $commentflag = $genderflag = false;
 $status="";
-$del=false;
 $columns = array("name", "gender", "website","comment");
 
 $email = $_SESSION["useremail"];
@@ -131,12 +130,11 @@ function input_formating($data,$ifwebsite) {
 if(isset($_POST['delete'])){
     $deluser = "DELETE FROM myguests WHERE email = '".$email."' ";
     if($mysqli->query($deluser) === TRUE){
-        $status = "Deleted successfully";
+        header('Location: Deleted.php');
     }
     else {
         $status = "DelError: ".$deluser."<br>".$mysqli->error;
     }
-    $del = false;
 }
 
 ?>
@@ -153,14 +151,14 @@ Name:   <input type="text" name="name" value="<?php echo $name;?>">
         <span class="error"><?php echo $nameErr;?></span>
         <br><br>
 Gender: <br><input type="radio" name="gender" 
-        <?php if ($gender=="male") echo "checked";?> 
-        value="male">Male
+        <?php if ($gender=="Male") echo "checked";?> 
+        value="Male">Male
         <input type="radio" name="gender"
-        <?php if ($gender=="female") echo "checked";?> 
-        value="female">Female
+        <?php if ($gender=="Female") echo "checked";?> 
+        value="Female">Female
         <input type="radio" name="gender"
-        <?php if ($gender=="other") echo "checked";?> 
-        value="other">Other
+        <?php if ($gender=="Other") echo "checked";?> 
+        value="Other">Other
         <span class="error"><?php echo $genderErr;?></span>
         <br><br>
 Website: <input type="text" name="website" value="<?php echo $website;?>">
@@ -171,12 +169,9 @@ Comment: <textarea name="comment" rows="3" cols="40"><?php echo $comment;?></tex
 
 <button type="submit" id="sshow" style="display: none">Confirm</button>
 <button type="button" id="shide" onclick="getElementById('shide').style.display='none'; getElementById('sshow').style.display=''">Save Changes</button>
-<br>
 <button type="button" onclick="location.href = 'User.php'" name="start">Back</button>
-<br>
-<button type="submit" name="delete" id="dshow" style="display: none">Confirm</button>
-<button type="button" id="dhide" onclick="getElementById('dhide').style.display='none'; getElementById('dshow').style.display=''">Delete Account</button>
-<br>
+<button type="submit" name="delete" id="dshow" style="display: none; float: right">Confirm</button>
+<button type="button" id="dhide" style="float: right"onclick="getElementById('dhide').style.display='none'; getElementById('dshow').style.display=''">Delete Account</button>
 
 <p>
     <?php 

@@ -5,12 +5,15 @@
         </title>
         <style>
             .error {color: red;}
-            .success {color: chartreuse;}
+            .success {color: darkgreen;}
             .warning {color: orange;}
         </style>
     </head>
 <body>
 <?php
+session_start();
+session_unset();
+session_destroy();
 //Database Connection
 $servername = "localhost";
 $user = "root";
@@ -43,8 +46,7 @@ if (isset($_POST['email']) && isset($_POST['pwd'])) {
 function checkmail($email, $password){
     $ret = mysqli_query($GLOBALS['mysqli'],"SELECT * FROM myguests WHERE email = '".$email."' AND password = SHA1('".$password."') ");
     if(!mysqli_fetch_assoc($ret)){
-        echo "<p class=\"error\">Wrong Email or Password</p>";
-        //$GLOBALS['verified']=true;
+        echo "<p align=center class=\"error\">Wrong Email or Password</p>";
     }
     else{
         session_start();

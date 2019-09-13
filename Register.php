@@ -3,7 +3,7 @@
     <head>
         <style>
             .error {color: red;}
-            .success {color: chartreuse;}
+            .success {color: darkgreen;}
             .warning {color: orange;}
         </style>
     </head>  
@@ -143,14 +143,14 @@ Name:   <input type="text" name="name" value="<?php echo $name;?>">
         <span class="error">*<?php echo $nameErr;?></span>
         <br><br>
 Gender: <br><input type="radio" name="gender" 
-        <?php if (isset($gender) && $gender=="male") echo "checked";?> 
-        value="male">Male
+        <?php if (isset($gender) && $gender=="Male") echo "checked";?> 
+        value="Male">Male
         <input type="radio" name="gender"
-        <?php if (isset($gender) && $gender=="female") echo "checked";?> 
-        value="female">Female
+        <?php if (isset($gender) && $gender=="Female") echo "checked";?> 
+        value="Female">Female
         <input type="radio" name="gender"
-        <?php if (isset($gender) && $gender=="other") echo "checked";?> 
-        value="other">Other
+        <?php if (isset($gender) && $gender=="Other") echo "checked";?> 
+        value="Other">Other
         <span class="error">*<?php echo $genderErr;?></span>
         <br><br>
 E-mail: <input type="text" name="email" value="<?php echo $email;?>">
@@ -162,7 +162,7 @@ Password: <input type="password" name="password" minlength="5">
 Website: <input type="text" name="website" value="<?php echo $website;?>">
          <span class="error">*<?php echo $websiteErr;?></span>
          <br><br>
-Comment: <textarea name="comment" rows="3" cols="40" value="<?php echo $comment;?>"></textarea>
+Comment: <textarea name="comment" rows="3" cols="40"><?php echo $comment;?></textarea>
          <br><br><br>
 <input type="submit">
 <input type="button" onclick="location.href = 'start.php'" name="start" value="Back">
